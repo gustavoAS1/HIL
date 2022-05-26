@@ -9,7 +9,6 @@ const int interrupt = 35;    //Entrada Interrupção D35
 const int saidpwm2 = 4;      // Saida pwm para interrupção
 int flag = 0;
 
-
 // Dados
 const int freq = 1800;    // Frequencia
 const int res = 8;        // Resolução de 8 bits, 0-256
