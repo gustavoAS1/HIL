@@ -3,7 +3,6 @@
 // Universidade Federal de Ouro preto
 
 
-
 // Geração de interrupção por ciclo de chaveamento com ADC sincronizado.
 
 #include "F28x_Project.h"
