@@ -1,0 +1,98 @@
+// Código do controlador PI implementado no Esp 32 para controle do conversor Buck em tempo real
+// Gustavo Araújo de Souza - 16.1.8363
+// Universidade Federal de Ouro Preto
+
+// Pinos
+const int saidpwm = 2;       //Saída PWM para Modelo
+const int ent = 34;          //Leitura de Corrente 
+const int interrupt = 35;    //Entrada Interrupção 
+const int temp = 5;          //Medidor do tempo de loop
+const int saidpwm2 = 4;      //Saida pwm para interrupção
+
+
+// Parametros PWM
+const int freq = 2000;    //Frequencia
+float ts = 0.0005;        //Periodo amostragem
+const int res = 8;        //Resolução de 8 bits, 0-256
+int d = 127;              //Duty cycle inicial 0.5
+
+
+// Parametros Controle
+float ref = 8.0;         //Referencia 
+float kp = 0.01;         //Ganho proporcional
+float ki = 6.0;          //Ganho integral
+float erro = 0.0;        //Erro inicial
+float pi = 0.0;
+float prop = 0.0;
+float integ = 0.0;
+int flag = 0.0;          //Flag para acionamento
+float entrada = 0.0;
+int cont = 0;
+void ISR();              //Declaração função interrupção
+
+void setup()
+{
+  pinMode(saidpwm, OUTPUT);      // SAIDA DE PWM PARA interrupção
+  pinMode(interrupt, INPUT);     // ENTRADA DA INTERRUPÇÃO
+  pinMode(ent, INPUT);           // ENTRADA DE CORRENTE DO DSP
+  pinMode(temp, OUTPUT);         // TEMPO DE CODIGO
+  pinMode(saidpwm2, OUTPUT);     // Saida pwm para dsp
+
+  analogReadResolution(10);
+  ledcAttachPin(saidpwm, 0);
+  ledcSetup(0, freq, res);
+  
+  attachInterrupt(digitalPinToInterrupt(interrupt), ISR, RISING);
+  
+  ledcWrite(0,d);
+  //Serial.begin(9600);
+  
+  ledcAttachPin(saidpwm2, 1);
+  ledcSetup(1, freq, res);
+   ledcWrite(1,50);
+}
+void loop()
+{
+if (flag == 1) { 
+    digitalWrite(temp, HIGH);                    // LIGA TEMPORIZADOR
+
+    entrada = 0.034*analogRead(ent);            // LEITURA ENTRADA
+  //Serial.println(entrada);
+  
+   // if(cont == 2000){
+   //   ref = 8.0;
+   // }
+    
+   // if (cont ==4000){
+   //   ref = 5.0;
+  //    cont = 0;
+  //  }
+    
+    
+    erro = ref - entrada;   
+
+    integ = integ + ki * erro * ts;
+
+    if (integ > 0.99) {integ = 0.99;}
+
+    prop = kp * erro;
+
+    pi = integ + prop;
+
+    if (pi > 1) {pi = 1;}
+    if (pi < 0) {pi = 0;}
+
+    d = 255.0 * pi;
+
+    cont = cont + 1;
+    flag = 0;                            // ZERA FLAG
+    ledcWrite(0, d);                     // PWM COM VALOR DO PI CORRESPONDENTE
+    digitalWrite(temp, LOW) ;            // ZERA TEMPORIZADOR
+                     
+}
+}
+
+void ISR()                               // FUNÇÃO DE INTERRUPÇÃO
+{
+  flag = 1;           
+}

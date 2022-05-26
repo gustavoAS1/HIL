@@ -1,0 +1,64 @@
+// Código para geração do PWM senoidal no Esp 32 necessário para acionamento do inversor monofásico
+// Gustavo Araujo de Souza - 16.1.8363
+// Universidade Federal de Ouro Preto
+
+
+// Pinos
+const int saidpwm = 2;       // Saída PWM final D2
+const int interrupt = 35;    //Entrada Interrupção D35
+const int saidpwm2 = 4;      // Saida pwm para interrupção
+int flag = 0;
+
+
+// Dados
+const int freq = 1800;    // Frequencia
+const int res = 8;        // Resolução de 8 bits, 0-256
+int d = 127;             //Duty cycle 0.5
+float t = 0.0;           // argumento
+float seno =0.0;
+
+void ISR();
+
+void setup (){
+  pinMode(saidpwm, OUTPUT);      // SAIDA DE PWM 
+  pinMode(interrupt, INPUT);     // ENTRADA DA INTERRUPÇÃO
+  pinMode(saidpwm2, OUTPUT);     // saida pwm para interrupçao
+  
+  analogReadResolution(10);    //PWM de saída
+  ledcAttachPin(saidpwm, 0);
+  ledcSetup(0, freq, res);
+  
+  attachInterrupt(digitalPinToInterrupt(interrupt), ISR, RISING);
+  
+  ledcWrite(0,d);
+  
+  ledcAttachPin(saidpwm2, 1);   //PWM de interrupção
+  ledcSetup(1, freq, res);
+  ledcWrite(1,50);
+  }
+
+
+void loop()
+{
+if (flag == 1) { 
+  
+  seno = 0.4*sin(t) + 0.5;  //Calculo Seno
+   
+  t = t + 0.2094;   
+  
+  if (t >= 6.283){
+  t = t-6.283;}
+  
+  d = 255.0 * seno;
+  flag = 0; // ZERA FLAG
+  
+  ledcWrite(0, d);
+                     
+}
+}
+
+
+void ISR()            // FUNÇÃO DE INTERRUPÇÃO
+{
+  flag = 1;           
+}
