@@ -14,7 +14,6 @@
 
 volatile struct DAC_REGS* DAC_PTR[4] = {0x0,&DacaRegs,&DacbRegs,&DaccRegs};   // necessário para o DAC funcionar
 
-
 #define EPWM1_TIMER_TBPRD  400  // Definição para frequência de interrupção : 200khz/fsw
 #define EPWM1_MAX_CMPA    250
 #define EPWM1_MIN_CMPB       50
