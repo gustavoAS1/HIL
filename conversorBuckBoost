@@ -18,7 +18,6 @@ volatile struct DAC_REGS* DAC_PTR[4] = {0x0,&DacaRegs,&DacbRegs,&DaccRegs};   //
 #define EPWM1_MAX_CMPA    250
 #define EPWM1_MIN_CMPB       50
 
-
 //Defines para frequencia de chaveamento do PWM 2
 #define EPWM2_TIMER_TBPRD  400 // 333khz           200khz/fsw
 #define EPWM2_MAX_CMPA    100
