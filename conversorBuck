@@ -77,7 +77,6 @@ float LL=0.0, CC=0.0, RR=0.0;
 float T=0.000002;
 
 
-
 void main(void){
     //Inicializa o sistema (watchdogtimer, pll, sysclock)
     InitSysCtrl();
