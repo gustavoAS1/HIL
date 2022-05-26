@@ -16,7 +16,6 @@ float ts = 0.0005;        //Periodo amostragem
 const int res = 8;        //Resolução de 8 bits, 0-256
 int d = 127;              //Duty cycle inicial 0.5
 
-
 // Parametros Controle
 float ref = 8.0;         //Referencia 
 float kp = 0.01;         //Ganho proporcional
