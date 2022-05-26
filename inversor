@@ -2,7 +2,6 @@
 // Gustavo Araújo de Souza - 16.1.8363
 // Universidade Federal de Ouro preto
 
-
 // Código gera uma interrupção por ciclo de chaveamento com ADC sincronizado.
 
 #include "F28x_Project.h"
